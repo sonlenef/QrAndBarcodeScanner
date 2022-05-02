@@ -1,14 +1,8 @@
 plugins {
-    id("io.sentry.android.gradle") version "3.0.1"
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
-}
-
-sentry {
-    includeProguardMapping = true
-    autoUploadProguardMapping = true
 }
 
 android {
@@ -16,18 +10,18 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        applicationId "com.example.barcodescanner"
+        applicationId "tech.sonle.barcodescanner"
         minSdkVersion 21
         targetSdkVersion 31
         versionCode 12
         versionName "1.10"
         multiDexEnabled true
-        vectorDrawables.useSupportLibrary  true
+        vectorDrawables.useSupportLibrary true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.incremental":"true"]
+                arguments = ["room.incremental": "true"]
             }
         }
 
@@ -112,7 +106,4 @@ dependencies {
 
     // Date time picker
     implementation 'com.github.florent37:singledateandtimepicker:2.2.6'
-
-    // Sentry
-    implementation 'io.sentry:sentry-android:5.7.1'
 }
