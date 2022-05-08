@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "919558055663",
+    "project_id": "scanner-6952c",
+    "storage_bucket": "scanner-6952c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919558055663:android:0b752ec2d5baa38e521d1a",
+        "android_client_info": {
+          "package_name": "tech.sonle.barcodescanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "919558055663-dd016qjrbguintbq12h2cjrklj2ffb70.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZkXPkeDNwzUxr-aNfDF6oU_mCwJmYMyQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "919558055663-dd016qjrbguintbq12h2cjrklj2ffb70.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
