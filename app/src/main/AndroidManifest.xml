@@ -26,6 +26,10 @@
         android:name=".App"
         >
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-9782307752944150~1550939527"/>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="tech.sonle.barcodescanner.fileprovider"

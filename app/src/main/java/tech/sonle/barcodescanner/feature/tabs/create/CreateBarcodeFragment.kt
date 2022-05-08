@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.extension.applySystemWindowInsets
 import tech.sonle.barcodescanner.extension.clipboardManager
@@ -14,6 +17,7 @@ import tech.sonle.barcodescanner.feature.tabs.create.qr.CreateQrCodeAllActivity
 import tech.sonle.barcodescanner.model.schema.BarcodeSchema
 import com.google.zxing.BarcodeFormat
 import kotlinx.android.synthetic.main.fragment_create_barcode.*
+import tech.sonle.barcodescanner.BuildConfig
 
 class CreateBarcodeFragment : Fragment() {
 
@@ -25,6 +29,17 @@ class CreateBarcodeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         supportEdgeToEdge()
         handleButtonsClicked()
+        initAds()
+    }
+
+    private fun initAds() {
+        val adView = AdView(requireContext())
+        adView.adSize = AdSize.BANNER
+        adView.adUnitId = BuildConfig.CA_APP_PUB_CREATE
+        adContainer.addView(adView)
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 
     private fun supportEdgeToEdge() {

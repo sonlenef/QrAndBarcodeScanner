@@ -5,23 +5,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_barcode_history.*
+import tech.sonle.barcodescanner.BuildConfig
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.di.barcodeDatabase
 import tech.sonle.barcodescanner.extension.applySystemWindowInsets
 import tech.sonle.barcodescanner.extension.showError
 import tech.sonle.barcodescanner.feature.common.dialog.DeleteConfirmationDialogFragment
 import tech.sonle.barcodescanner.feature.tabs.history.export.ExportHistoryActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_barcode_history.*
 
 
 class BarcodeHistoryFragment : Fragment(), DeleteConfirmationDialogFragment.Listener {
     private val disposable = CompositeDisposable()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_barcode_history, container, false)
     }
 
@@ -30,6 +38,17 @@ class BarcodeHistoryFragment : Fragment(), DeleteConfirmationDialogFragment.List
         supportEdgeToEdge()
         initTabs()
         handleMenuClicked()
+        initAds()
+    }
+
+    private fun initAds() {
+        val adView = AdView(requireContext())
+        adView.adSize = AdSize.BANNER
+        adView.adUnitId = BuildConfig.CA_APP_PUB_HISTORY
+        adContainer.addView(adView)
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 
     override fun onDeleteConfirmed() {
@@ -65,7 +84,8 @@ class BarcodeHistoryFragment : Fragment(), DeleteConfirmationDialogFragment.List
     }
 
     private fun showDeleteHistoryConfirmationDialog() {
-        val dialog = DeleteConfirmationDialogFragment.newInstance(R.string.dialog_delete_clear_history_message)
+        val dialog =
+            DeleteConfirmationDialogFragment.newInstance(R.string.dialog_delete_clear_history_message)
         dialog.show(childFragmentManager, "")
     }
 

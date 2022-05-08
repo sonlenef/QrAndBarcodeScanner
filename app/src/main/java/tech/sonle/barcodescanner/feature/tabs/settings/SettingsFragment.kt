@@ -7,6 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -48,6 +51,17 @@ class SettingsFragment : Fragment(), DeleteConfirmationDialogFragment.Listener {
         handleButtonClicks()
         showSettings()
         showAppVersion()
+        initAds()
+    }
+
+    private fun initAds() {
+        val adView = AdView(requireContext())
+        adView.adSize = AdSize.BANNER
+        adView.adUnitId = BuildConfig.CA_APP_PUB_SETTINGS
+        adContainer.addView(adView)
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 
     override fun onDeleteConfirmed() {

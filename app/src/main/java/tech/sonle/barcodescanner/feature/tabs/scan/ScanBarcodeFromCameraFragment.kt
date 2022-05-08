@@ -13,6 +13,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.budiyev.android.codescanner.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.zxing.Result
+import com.google.zxing.ResultMetadataType
+import io.reactivex.Completable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_scan_barcode_from_camera.*
+import tech.sonle.barcodescanner.BuildConfig
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.di.*
 import tech.sonle.barcodescanner.extension.*
@@ -22,14 +34,6 @@ import tech.sonle.barcodescanner.feature.tabs.scan.file.ScanBarcodeFromFileActiv
 import tech.sonle.barcodescanner.model.Barcode
 import tech.sonle.barcodescanner.usecase.SupportedBarcodeFormats
 import tech.sonle.barcodescanner.usecase.save
-import com.google.zxing.Result
-import com.google.zxing.ResultMetadataType
-import io.reactivex.Completable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_scan_barcode_from_camera.*
 import java.util.concurrent.TimeUnit
 
 class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.Listener {
@@ -49,7 +53,11 @@ class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.L
     private var toast: Toast? = null
     private var lastResult: Barcode? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_scan_barcode_from_camera, container, false)
     }
 
@@ -64,6 +72,17 @@ class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.L
         handleDecreaseZoomClicked()
         handleIncreaseZoomClicked()
         requestPermissions()
+        initAds()
+    }
+
+    private fun initAds() {
+        val adView = AdView(requireContext())
+        adView.adSize = AdSize.BANNER
+        adView.adUnitId = BuildConfig.CA_APP_PUB_SCAN
+        adContainer.addView(adView)
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 
     override fun onResume() {
@@ -74,7 +93,11 @@ class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.L
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == PERMISSION_REQUEST_CODE && areAllPermissionsGranted(grantResults)) {
             initZoomSeekBar()
             codeScanner.startPreview()
@@ -178,8 +201,8 @@ class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.L
 
     private fun handleZoomChanged() {
         seek_bar_zoom.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStartTrackingTouch(seekBar: SeekBar?) { }
-            override fun onStopTrackingTouch(seekBar: SeekBar?) { }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
@@ -241,14 +264,18 @@ class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.L
 
         when {
             settings.confirmScansManually -> showScanConfirmationDialog(barcode)
-            settings.saveScannedBarcodesToHistory || settings.continuousScanning -> saveScannedBarcode(barcode)
+            settings.saveScannedBarcodesToHistory || settings.continuousScanning -> saveScannedBarcode(
+                barcode
+            )
             else -> navigateToBarcodeScreen(barcode)
         }
     }
 
     private fun handleConfirmedBarcode(barcode: Barcode) {
         when {
-            settings.saveScannedBarcodesToHistory || settings.continuousScanning -> saveScannedBarcode(barcode)
+            settings.saveScannedBarcodesToHistory || settings.continuousScanning -> saveScannedBarcode(
+                barcode
+            )
             else -> navigateToBarcodeScreen(barcode)
         }
     }
@@ -317,11 +344,15 @@ class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.L
     }
 
     private fun requestPermissions() {
-        permissionsHelper.requestNotGrantedPermissions(requireActivity() as AppCompatActivity, PERMISSIONS, PERMISSION_REQUEST_CODE)
+        permissionsHelper.requestNotGrantedPermissions(
+            requireActivity() as AppCompatActivity,
+            PERMISSIONS,
+            PERMISSION_REQUEST_CODE
+        )
     }
 
     private fun areAllPermissionsGranted(): Boolean {
-       return permissionsHelper.areAllPermissionsGranted(requireActivity(), PERMISSIONS)
+        return permissionsHelper.areAllPermissionsGranted(requireActivity(), PERMISSIONS)
     }
 
     private fun areAllPermissionsGranted(grantResults: IntArray): Boolean {

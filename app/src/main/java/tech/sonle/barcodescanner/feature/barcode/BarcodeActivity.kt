@@ -38,7 +38,6 @@ import kotlinx.android.synthetic.main.activity_barcode.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listener, ChooseSearchEngineDialogFragment.Listener, EditBarcodeNameDialogFragment.Listener {
 
     companion object {

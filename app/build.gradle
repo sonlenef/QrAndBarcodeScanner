@@ -13,8 +13,8 @@ android {
         applicationId "tech.sonle.barcodescanner"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 12
-        versionName "1.10"
+        versionCode 1
+        versionName "1.0"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -45,15 +45,29 @@ android {
         }
     }
 
-    flavorDimensions "market"
+    flavorDimensions "default"
     productFlavors {
-        appGallery {}
-        googlePlay {
-            applicationId "org.barcodescanner"
+        develop
+        production
+    }
+
+    applicationVariants.all { variant ->
+        def CA_APP_PUB_SCAN, CA_APP_PUB_CREATE, CA_APP_PUB_HISTORY, CA_APP_PUB_SETTINGS
+        if (variant.getName().contains("develop")) {
+            CA_APP_PUB_SCAN = "ca-app-pub-3940256099942544/6300978111"
+            CA_APP_PUB_CREATE = "ca-app-pub-3940256099942544/6300978111"
+            CA_APP_PUB_HISTORY = "ca-app-pub-3940256099942544/6300978111"
+            CA_APP_PUB_SETTINGS = "ca-app-pub-3940256099942544/6300978111"
+        } else {
+            CA_APP_PUB_SCAN = "ca-app-pub-9782307752944150/1354115518"
+            CA_APP_PUB_CREATE = "ca-app-pub-9782307752944150/4265868240"
+            CA_APP_PUB_HISTORY = "ca-app-pub-9782307752944150/6508888208"
+            CA_APP_PUB_SETTINGS = "ca-app-pub-9782307752944150/2154161483"
         }
-        fDroid {
-            buildConfigField "boolean", "ERROR_REPORTS_ENABLED_BY_DEFAULT", "false"
-        }
+        variant.buildConfigField "String", "CA_APP_PUB_SCAN", "\"${CA_APP_PUB_SCAN}\""
+        variant.buildConfigField "String", "CA_APP_PUB_CREATE", "\"${CA_APP_PUB_CREATE}\""
+        variant.buildConfigField "String", "CA_APP_PUB_HISTORY", "\"${CA_APP_PUB_HISTORY}\""
+        variant.buildConfigField "String", "CA_APP_PUB_SETTINGS", "\"${CA_APP_PUB_SETTINGS}\""
     }
 }
 
@@ -106,4 +120,7 @@ dependencies {
 
     // Date time picker
     implementation 'com.github.florent37:singledateandtimepicker:2.2.6'
+
+    // Ads
+    implementation 'com.google.android.gms:play-services-ads:20.6.0'
 }
