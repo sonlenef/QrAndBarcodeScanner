@@ -1,12 +1,5 @@
 ## Overview
-[![License: Unlicense](https://img.shields.io/badge/license-Unlicense-blue.svg)](http://unlicense.org/)
-[![](https://img.shields.io/github/v/release/wewewe718/QrAndBarcodeScanner)](https://github.com/wewewe718/QrAndBarcodeScanner/releases/latest)
-
 QR & Barcode Scanner is an ad-free, open-source scanner app. It uses the [ZXing][zxing] scanning library.
-
-## Download
-
-<a href="https://play.google.com/store/apps/details?id=org.barcodescanner"><img alt="Get it on Google Play" src="https://github.com/wewewe718/QrAndBarcodeScanner/blob/develop/images/google_play/badge.png" height="60"/></a>   <a href="https://appgallery7.huawei.com/#/app/C102717909"><img alt="Explore it on AppGallery" src="https://github.com/wewewe718/QrAndBarcodeScanner/blob/develop/images/app_gallery/badge.png" height="60"/></a>   <a href="https://www.f-droid.org/en/packages/tech.sonle.barcodescanner/"><img alt="Get it on FDroid" src="https://github.com/wewewe718/QrAndBarcodeScanner/blob/develop/images/fdroid_badge.png" height="60"/></a>   <a href="https://github.com/wewewe718/QrAndBarcodeScanner/releases"><img alt="Get it on Github" src="https://github.com/wewewe718/QrAndBarcodeScanner/blob/develop/images/get-it-on-github.png" height="60"/></a>
 
 ## Screenshots
 
