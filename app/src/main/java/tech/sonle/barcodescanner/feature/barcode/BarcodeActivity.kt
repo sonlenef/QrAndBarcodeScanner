@@ -5,15 +5,29 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.provider.ContactsContract
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.print.PrintHelper
+import com.google.android.ads.nativetemplates.NativeTemplateStyle
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdLoader
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.nativead.NativeAdOptions
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_barcode.*
+import tech.sonle.barcodescanner.BuildConfig
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.di.*
 import tech.sonle.barcodescanner.extension.*
@@ -30,15 +44,14 @@ import tech.sonle.barcodescanner.model.SearchEngine
 import tech.sonle.barcodescanner.model.schema.BarcodeSchema
 import tech.sonle.barcodescanner.model.schema.OtpAuth
 import tech.sonle.barcodescanner.usecase.save
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.addTo
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_barcode.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listener, ChooseSearchEngineDialogFragment.Listener, EditBarcodeNameDialogFragment.Listener {
+
+class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listener,
+    ChooseSearchEngineDialogFragment.Listener, EditBarcodeNameDialogFragment.Listener {
+
+    private lateinit var adLoader: AdLoader
 
     companion object {
         private const val BARCODE_KEY = "BARCODE_KEY"
@@ -57,7 +70,8 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
     private val dateFormatter = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ENGLISH)
 
     private val originalBarcode by unsafeLazy {
-        intent?.getSerializableExtra(BARCODE_KEY) as? Barcode ?: throw IllegalArgumentException("No barcode passed")
+        intent?.getSerializableExtra(BARCODE_KEY) as? Barcode
+            ?: throw IllegalArgumentException("No barcode passed")
     }
 
     private val isCreated by unsafeLazy {
@@ -91,6 +105,40 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
         showBarcode()
         showOrHideButtons()
         showButtonText()
+        initAds()
+    }
+
+    private fun initAds() {
+        adLoader = AdLoader.Builder(this, BuildConfig.CA_APP_PUB_CREATE_NATIVE_ADS)
+            .forNativeAd {
+                val styles =
+                    NativeTemplateStyle.Builder().withMainBackgroundColor(
+                        ColorDrawable(
+                            ContextCompat.getColor(
+                                this,
+                                R.color.color_background
+                            )
+                        )
+                    ).build()
+
+                nativeAdTemplate.setStyles(styles)
+                nativeAdTemplate.setNativeAd(it)
+
+                if (isDestroyed) {
+                    it.destroy()
+                    return@forNativeAd
+                }
+            }
+            .withAdListener(object : AdListener() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    Log.d("====", adError.message)
+                }
+            })
+            .withNativeAdOptions(
+                NativeAdOptions.Builder().build()
+            )
+            .build()
+        adLoader.loadAds(AdRequest.Builder().build(), 3)
     }
 
     override fun onDeleteConfirmed() {
@@ -319,22 +367,52 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
             putExtra(ContactsContract.Intents.Insert.JOB_TITLE, barcode.jobTitle.orEmpty())
 
             putExtra(ContactsContract.Intents.Insert.PHONE, barcode.phone.orEmpty())
-            putExtra(ContactsContract.Intents.Insert.PHONE_TYPE, barcode.phoneType.orEmpty().toPhoneType())
+            putExtra(
+                ContactsContract.Intents.Insert.PHONE_TYPE,
+                barcode.phoneType.orEmpty().toPhoneType()
+            )
 
-            putExtra(ContactsContract.Intents.Insert.SECONDARY_PHONE, barcode.secondaryPhone.orEmpty())
-            putExtra(ContactsContract.Intents.Insert.SECONDARY_PHONE_TYPE, barcode.secondaryPhoneType.orEmpty().toPhoneType())
+            putExtra(
+                ContactsContract.Intents.Insert.SECONDARY_PHONE,
+                barcode.secondaryPhone.orEmpty()
+            )
+            putExtra(
+                ContactsContract.Intents.Insert.SECONDARY_PHONE_TYPE,
+                barcode.secondaryPhoneType.orEmpty().toPhoneType()
+            )
 
-            putExtra(ContactsContract.Intents.Insert.TERTIARY_PHONE, barcode.tertiaryPhone.orEmpty())
-            putExtra(ContactsContract.Intents.Insert.TERTIARY_PHONE_TYPE, barcode.tertiaryPhoneType.orEmpty().toPhoneType())
+            putExtra(
+                ContactsContract.Intents.Insert.TERTIARY_PHONE,
+                barcode.tertiaryPhone.orEmpty()
+            )
+            putExtra(
+                ContactsContract.Intents.Insert.TERTIARY_PHONE_TYPE,
+                barcode.tertiaryPhoneType.orEmpty().toPhoneType()
+            )
 
             putExtra(ContactsContract.Intents.Insert.EMAIL, barcode.email.orEmpty())
-            putExtra(ContactsContract.Intents.Insert.EMAIL_TYPE, barcode.emailType.orEmpty().toEmailType())
+            putExtra(
+                ContactsContract.Intents.Insert.EMAIL_TYPE,
+                barcode.emailType.orEmpty().toEmailType()
+            )
 
-            putExtra(ContactsContract.Intents.Insert.SECONDARY_EMAIL, barcode.secondaryEmail.orEmpty())
-            putExtra(ContactsContract.Intents.Insert.SECONDARY_EMAIL_TYPE, barcode.secondaryEmailType.orEmpty().toEmailType())
+            putExtra(
+                ContactsContract.Intents.Insert.SECONDARY_EMAIL,
+                barcode.secondaryEmail.orEmpty()
+            )
+            putExtra(
+                ContactsContract.Intents.Insert.SECONDARY_EMAIL_TYPE,
+                barcode.secondaryEmailType.orEmpty().toEmailType()
+            )
 
-            putExtra(ContactsContract.Intents.Insert.TERTIARY_EMAIL, barcode.tertiaryEmail.orEmpty())
-            putExtra(ContactsContract.Intents.Insert.TERTIARY_EMAIL_TYPE, barcode.tertiaryEmailType.orEmpty().toEmailType())
+            putExtra(
+                ContactsContract.Intents.Insert.TERTIARY_EMAIL,
+                barcode.tertiaryEmail.orEmpty()
+            )
+            putExtra(
+                ContactsContract.Intents.Insert.TERTIARY_EMAIL_TYPE,
+                barcode.tertiaryEmailType.orEmpty().toEmailType()
+            )
 
             putExtra(ContactsContract.Intents.Insert.NOTES, barcode.note.orEmpty())
         }
@@ -374,15 +452,15 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
 
         wifiConnector
             .connect(
-                    this,
-                    barcode.networkAuthType.orEmpty(),
-                    barcode.networkName.orEmpty(),
-                    barcode.networkPassword.orEmpty(),
-                    barcode.isHidden.orFalse(),
-                    barcode.anonymousIdentity.orEmpty(),
-                    barcode.identity.orEmpty(),
-                    barcode.eapMethod.orEmpty(),
-                    barcode.phase2Method.orEmpty()
+                this,
+                barcode.networkAuthType.orEmpty(),
+                barcode.networkName.orEmpty(),
+                barcode.networkPassword.orEmpty(),
+                barcode.isHidden.orFalse(),
+                barcode.anonymousIdentity.orEmpty(),
+                barcode.identity.orEmpty(),
+                barcode.eapMethod.orEmpty(),
+                barcode.phase2Method.orEmpty()
             )
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -469,9 +547,9 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
     private fun searchBarcodeTextOnInternet() {
         val searchEngine = settings.searchEngine
         when (searchEngine) {
-           SearchEngine.NONE -> performWebSearch()
-           SearchEngine.ASK_EVERY_TIME -> showSearchEnginesDialog()
-           else -> performWebSearchUsingSearchEngine(searchEngine)
+            SearchEngine.NONE -> performWebSearch()
+            SearchEngine.ASK_EVERY_TIME -> showSearchEnginesDialog()
+            else -> performWebSearchUsingSearchEngine(searchEngine)
         }
     }
 
@@ -564,7 +642,8 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
         } else {
             R.drawable.ic_favorite_unchecked
         }
-        toolbar.menu?.findItem(R.id.item_add_to_favorites)?.icon = ContextCompat.getDrawable(this, iconId)
+        toolbar.menu?.findItem(R.id.item_add_to_favorites)?.icon =
+            ContextCompat.getDrawable(this, iconId)
     }
 
     private fun showBarcodeImageIfNeeded() {
@@ -575,7 +654,14 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
 
     private fun showBarcodeImage() {
         try {
-            val bitmap = barcodeImageGenerator.generateBitmap(originalBarcode, 2000, 2000, 0, settings.barcodeContentColor, settings.barcodeBackgroundColor)
+            val bitmap = barcodeImageGenerator.generateBitmap(
+                originalBarcode,
+                2000,
+                2000,
+                0,
+                settings.barcodeContentColor,
+                settings.barcodeBackgroundColor
+            )
             layout_barcode_image_background.isVisible = true
             image_view_barcode.isVisible = true
             image_view_barcode.setImageBitmap(bitmap)
@@ -662,17 +748,21 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
         button_search.isVisible = barcode.isProductBarcode.not()
 
         button_add_to_calendar.isVisible = barcode.schema == BarcodeSchema.VEVENT
-        button_add_to_contacts.isVisible = barcode.schema == BarcodeSchema.VCARD || barcode.schema == BarcodeSchema.MECARD
+        button_add_to_contacts.isVisible =
+            barcode.schema == BarcodeSchema.VCARD || barcode.schema == BarcodeSchema.MECARD
 
         button_call_phone_1.isVisible = barcode.phone.isNullOrEmpty().not()
         button_call_phone_2.isVisible = barcode.secondaryPhone.isNullOrEmpty().not()
         button_call_phone_3.isVisible = barcode.tertiaryPhone.isNullOrEmpty().not()
 
-        button_send_sms_or_mms_1.isVisible = barcode.phone.isNullOrEmpty().not() || barcode.smsBody.isNullOrEmpty().not()
+        button_send_sms_or_mms_1.isVisible =
+            barcode.phone.isNullOrEmpty().not() || barcode.smsBody.isNullOrEmpty().not()
         button_send_sms_or_mms_2.isVisible = barcode.secondaryPhone.isNullOrEmpty().not()
         button_send_sms_or_mms_3.isVisible = barcode.tertiaryPhone.isNullOrEmpty().not()
 
-        button_send_email_1.isVisible = barcode.email.isNullOrEmpty().not() || barcode.emailSubject.isNullOrEmpty().not() || barcode.emailBody.isNullOrEmpty().not()
+        button_send_email_1.isVisible =
+            barcode.email.isNullOrEmpty().not() || barcode.emailSubject.isNullOrEmpty()
+                .not() || barcode.emailBody.isNullOrEmpty().not()
         button_send_email_2.isVisible = barcode.secondaryEmail.isNullOrEmpty().not()
         button_send_email_3.isVisible = barcode.tertiaryEmail.isNullOrEmpty().not()
 
@@ -681,7 +771,8 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
         button_open_wifi_settings.isVisible = barcode.schema == BarcodeSchema.WIFI
         button_copy_network_name.isVisible = barcode.networkName.isNullOrEmpty().not()
         button_copy_network_password.isVisible = barcode.networkPassword.isNullOrEmpty().not()
-        button_open_app.isVisible = barcode.appPackage.isNullOrEmpty().not() && isAppInstalled(barcode.appPackage)
+        button_open_app.isVisible =
+            barcode.appPackage.isNullOrEmpty().not() && isAppInstalled(barcode.appPackage)
         button_open_in_app_market.isVisible = barcode.appMarketUrl.isNullOrEmpty().not()
         button_open_in_youtube.isVisible = barcode.youtubeUrl.isNullOrEmpty().not()
         button_show_otp.isVisible = barcode.otpUrl.isNullOrEmpty().not()
@@ -693,16 +784,22 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
 
     private fun showButtonText() {
         button_call_phone_1.text = getString(R.string.activity_barcode_call_phone, barcode.phone)
-        button_call_phone_2.text = getString(R.string.activity_barcode_call_phone, barcode.secondaryPhone)
-        button_call_phone_3.text = getString(R.string.activity_barcode_call_phone, barcode.tertiaryPhone)
+        button_call_phone_2.text =
+            getString(R.string.activity_barcode_call_phone, barcode.secondaryPhone)
+        button_call_phone_3.text =
+            getString(R.string.activity_barcode_call_phone, barcode.tertiaryPhone)
 
         button_send_sms_or_mms_1.text = getString(R.string.activity_barcode_send_sms, barcode.phone)
-        button_send_sms_or_mms_2.text = getString(R.string.activity_barcode_send_sms, barcode.secondaryPhone)
-        button_send_sms_or_mms_3.text = getString(R.string.activity_barcode_send_sms, barcode.tertiaryPhone)
+        button_send_sms_or_mms_2.text =
+            getString(R.string.activity_barcode_send_sms, barcode.secondaryPhone)
+        button_send_sms_or_mms_3.text =
+            getString(R.string.activity_barcode_send_sms, barcode.tertiaryPhone)
 
         button_send_email_1.text = getString(R.string.activity_barcode_send_email, barcode.email)
-        button_send_email_2.text = getString(R.string.activity_barcode_send_email, barcode.secondaryEmail)
-        button_send_email_3.text = getString(R.string.activity_barcode_send_email, barcode.tertiaryEmail)
+        button_send_email_2.text =
+            getString(R.string.activity_barcode_send_email, barcode.secondaryEmail)
+        button_send_email_3.text =
+            getString(R.string.activity_barcode_send_email, barcode.tertiaryEmail)
     }
 
     private fun showConnectToWifiButtonEnabled(isEnabled: Boolean) {
@@ -710,7 +807,8 @@ class BarcodeActivity : BaseActivity(), DeleteConfirmationDialogFragment.Listene
     }
 
     private fun showDeleteBarcodeConfirmationDialog() {
-        val dialog = DeleteConfirmationDialogFragment.newInstance(R.string.dialog_delete_barcode_message)
+        val dialog =
+            DeleteConfirmationDialogFragment.newInstance(R.string.dialog_delete_barcode_message)
         dialog.show(supportFragmentManager, "")
     }
 

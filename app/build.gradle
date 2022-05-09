@@ -64,29 +64,30 @@ android {
     }
 
     applicationVariants.all { variant ->
-        def CA_APP_PUB_SCAN, CA_APP_PUB_CREATE, CA_APP_PUB_HISTORY, CA_APP_PUB_SETTINGS, CA_APP_PUB_CREATE_ADS
+        def CA_APP_PUB_SCAN, CA_APP_PUB_CREATE, CA_APP_PUB_HISTORY, CA_APP_PUB_SETTINGS, CA_APP_PUB_CREATE_NATIVE_ADS
         if (variant.getName().contains("develop")) {
             CA_APP_PUB_SCAN = "ca-app-pub-3940256099942544/6300978111"
             CA_APP_PUB_CREATE = "ca-app-pub-3940256099942544/6300978111"
             CA_APP_PUB_HISTORY = "ca-app-pub-3940256099942544/6300978111"
             CA_APP_PUB_SETTINGS = "ca-app-pub-3940256099942544/6300978111"
-            CA_APP_PUB_CREATE_ADS = "ca-app-pub-3940256099942544/6300978111"
+            CA_APP_PUB_CREATE_NATIVE_ADS = "ca-app-pub-3940256099942544/6300978111"
         } else {
             CA_APP_PUB_SCAN = "ca-app-pub-9782307752944150/1354115518"
             CA_APP_PUB_CREATE = "ca-app-pub-9782307752944150/4265868240"
             CA_APP_PUB_HISTORY = "ca-app-pub-9782307752944150/6508888208"
             CA_APP_PUB_SETTINGS = "ca-app-pub-9782307752944150/2154161483"
-            CA_APP_PUB_CREATE_ADS = "ca-app-pub-9782307752944150/7458259367"
+            CA_APP_PUB_CREATE_NATIVE_ADS = "ca-app-pub-9782307752944150/7458259367"
         }
         variant.buildConfigField "String", "CA_APP_PUB_SCAN", "\"${CA_APP_PUB_SCAN}\""
         variant.buildConfigField "String", "CA_APP_PUB_CREATE", "\"${CA_APP_PUB_CREATE}\""
         variant.buildConfigField "String", "CA_APP_PUB_HISTORY", "\"${CA_APP_PUB_HISTORY}\""
         variant.buildConfigField "String", "CA_APP_PUB_SETTINGS", "\"${CA_APP_PUB_SETTINGS}\""
-        variant.buildConfigField "String", "CA_APP_PUB_SETTINGS", "\"${CA_APP_PUB_CREATE_ADS}\""
+        variant.buildConfigField "String", "CA_APP_PUB_CREATE_NATIVE_ADS", "\"${CA_APP_PUB_CREATE_NATIVE_ADS}\""
     }
 }
 
 dependencies {
+    implementation project(':nativetemplates')
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Kotlin
