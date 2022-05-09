@@ -36,7 +36,7 @@ class BarcodeDatabaseTypeConverter {
 }
 
 
-@Database(entities = [Barcode::class], version = 2)
+@Database(entities = [Barcode::class], version = 1)
 abstract class BarcodeDatabaseFactory : RoomDatabase() {
     abstract fun getBarcodeDatabase(): BarcodeDatabase
 }
@@ -49,12 +49,12 @@ interface BarcodeDatabase {
 
         fun getInstance(context: Context): BarcodeDatabase {
             return INSTANCE ?: Room
-                .databaseBuilder(context.applicationContext, BarcodeDatabaseFactory::class.java, "db")
-                .addMigrations(object : Migration(1, 2) {
-                    override fun migrate(database: SupportSQLiteDatabase) {
-                        database.execSQL("ALTER TABLE codes ADD COLUMN name TEXT")
-                    }
-                })
+                .databaseBuilder(context.applicationContext, BarcodeDatabaseFactory::class.java, "scannerDb")
+//                .addMigrations(object : Migration(1, 2) {
+//                    override fun migrate(database: SupportSQLiteDatabase) {
+//                        database.execSQL("ALTER TABLE codes ADD COLUMN name TEXT")
+//                    }
+//                })
                 .build()
                 .getBarcodeDatabase().apply {
                     INSTANCE = this
