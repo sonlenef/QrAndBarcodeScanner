@@ -9,12 +9,16 @@ import android.os.Bundle
 import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
 import com.google.zxing.BarcodeFormat
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_create_barcode.*
+import tech.sonle.barcodescanner.BuildConfig
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.di.*
 import tech.sonle.barcodescanner.extension.applySystemWindowInsets
@@ -103,6 +107,17 @@ class CreateBarcodeActivity : BaseActivity(), AppAdapter.Listener {
         showToolbarTitle()
         showToolbarMenu()
         showFragment()
+        initAds()
+    }
+
+    private fun initAds() {
+        val adView = AdView(this)
+        adView.adSize = AdSize.BANNER
+        adView.adUnitId = BuildConfig.CA_APP_PUB_CREATE
+        adContainer.addView(adView)
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
