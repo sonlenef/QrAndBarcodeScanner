@@ -26,7 +26,11 @@ object BarcodeImageScanner {
         try {
             emitter.onSuccess(tryParse(image))
         } catch (ex: Exception) {
-            emitter.onError(ex)
+            try {
+                emitter.onError(ex)
+            } catch (exs: Exception) {
+                // Todo some thing
+            }
         }
     }
 

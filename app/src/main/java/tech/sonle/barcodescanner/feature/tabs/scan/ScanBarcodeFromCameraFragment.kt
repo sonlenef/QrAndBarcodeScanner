@@ -206,7 +206,11 @@ class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.L
 
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 if (fromUser) {
-                    codeScanner.zoom = progress
+                    try {
+                        codeScanner.zoom = progress
+                    } catch (ex: Exception) {
+                        // Todo some thing
+                    }
                 }
             }
         })

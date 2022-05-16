@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "919558055663",
-    "project_id": "scanner-6952c",
-    "storage_bucket": "scanner-6952c.appspot.com"
+    "project_number": "619710881815",
+    "project_id": "qr-and-barcode-scanner-350409",
+    "storage_bucket": "qr-and-barcode-scanner-350409.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:919558055663:android:0b752ec2d5baa38e521d1a",
+        "mobilesdk_app_id": "1:619710881815:android:7da7055ce0e3a7e74e3c52",
         "android_client_info": {
           "package_name": "tech.sonle.barcodescanner"
         }
       },
       "oauth_client": [
         {
-          "client_id": "919558055663-dd016qjrbguintbq12h2cjrklj2ffb70.apps.googleusercontent.com",
+          "client_id": "619710881815-i3n9n0ij6mq09ksup4sllfphjqd2l7ja.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDZkXPkeDNwzUxr-aNfDF6oU_mCwJmYMyQ"
+          "current_key": "AIzaSyCf5emwgzWEgwKmJZU1G6Sf3MhyfKsep4w"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "919558055663-dd016qjrbguintbq12h2cjrklj2ffb70.apps.googleusercontent.com",
+              "client_id": "619710881815-i3n9n0ij6mq09ksup4sllfphjqd2l7ja.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
