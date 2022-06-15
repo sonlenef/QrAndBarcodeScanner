@@ -8,14 +8,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "tech.sonle.barcodescanner"
         minSdkVersion 21
-        targetSdkVersion 31
-        versionCode 4
+        targetSdkVersion 32
+        versionCode 5
         versionName "2.0"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary true
