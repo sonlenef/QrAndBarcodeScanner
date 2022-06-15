@@ -7,6 +7,8 @@ import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import tech.sonle.barcodescanner.di.settings
+import tech.sonle.barcodescanner.extension.Config.Companion.IS_SHOW_ADS
+
 
 class App : MultiDexApplication() {
 
@@ -23,6 +25,7 @@ class App : MultiDexApplication() {
             this
         ) {}
         super.onCreate()
+
         loadInter()
     }
 
@@ -79,7 +82,7 @@ class App : MultiDexApplication() {
 
     fun showInter(activity: Activity) {
         currentTime = System.currentTimeMillis()
-        if (currentTime - lastTimeShowInter >= 3000) {
+        if (currentTime - lastTimeShowInter >= 3000 && IS_SHOW_ADS) {
             Log.d(TAG, "showInter: $currentTime - $lastTimeShowInter")
             if (interstitial != null) {
                 interstitial!!.show(activity)

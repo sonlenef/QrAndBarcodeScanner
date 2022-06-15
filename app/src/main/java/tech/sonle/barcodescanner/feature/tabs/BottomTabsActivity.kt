@@ -12,7 +12,10 @@ import tech.sonle.barcodescanner.feature.tabs.history.BarcodeHistoryFragment
 import tech.sonle.barcodescanner.feature.tabs.scan.ScanBarcodeFromCameraFragment
 import tech.sonle.barcodescanner.feature.tabs.settings.SettingsFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import kotlinx.android.synthetic.main.activity_bottom_tabs.*
+import tech.sonle.barcodescanner.extension.Config
 
 class BottomTabsActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -24,6 +27,20 @@ class BottomTabsActivity : BaseActivity(), BottomNavigationView.OnNavigationItem
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bottom_tabs)
+
+        val remoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+        val configSettings = FirebaseRemoteConfigSettings.Builder().apply {
+            minimumFetchIntervalInSeconds = 0
+        }.build()
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+
+        remoteConfig.fetchAndActivate()
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    Config.IS_SHOW_ADS = remoteConfig.getBoolean("AdsShow")
+                }
+            }
 
         supportEdgeToEdge()
         initBottomNavigationView()
