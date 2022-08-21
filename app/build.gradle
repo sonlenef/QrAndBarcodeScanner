@@ -5,6 +5,11 @@ plugins {
     id 'kotlin-kapt'
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
+    id 'applovin-quality-service'
+}
+
+applovin {
+    apiKey = "Acpx2pgPNu-lPOKd_T9hvgspdCHiToNfxFVkp4CiaZ3owCH2KPf21PZf7DQUAFgeT6MQ2nt39WWpUubG3MXe_g"
 }
 
 android {
@@ -64,7 +69,13 @@ android {
     }
 
     applicationVariants.all { variant ->
-        def CA_APP_PUB_SCAN, CA_APP_PUB_CREATE, CA_APP_PUB_HISTORY, CA_APP_PUB_SETTINGS, CA_APP_PUB_CREATE_NATIVE_ADS, CA_APP_PUB_APP_INTERSTITIAL
+        def CA_APP_PUB_SCAN, CA_APP_PUB_CREATE,
+                CA_APP_PUB_HISTORY,CA_APP_PUB_SETTINGS,
+                CA_APP_PUB_CREATE_NATIVE_ADS, CA_APP_PUB_APP_INTERSTITIAL,
+                CA_APP_PUB_BLOCK_ADS_10, CA_APP_PUB_BLOCK_ADS_20, CA_APP_PUB_BLOCK_ADS_30
+        def AD_UNIT_SCAN_BANNER, AD_UNIT_HISTORY_BANNER,
+                AD_UNIT_CREATE_BANNER, AD_UNIT_SETTING_BANNER,
+                AD_UNIT_APP_INTERSTITIAL
         if (variant.getName().contains("develop")) {
             CA_APP_PUB_SCAN = "ca-app-pub-3940256099942544/6300978111"
             CA_APP_PUB_CREATE = "ca-app-pub-3940256099942544/6300978111"
@@ -72,6 +83,9 @@ android {
             CA_APP_PUB_SETTINGS = "ca-app-pub-3940256099942544/6300978111"
             CA_APP_PUB_CREATE_NATIVE_ADS = "ca-app-pub-3940256099942544/6300978111"
             CA_APP_PUB_APP_INTERSTITIAL = "ca-app-pub-3940256099942544/1033173712"
+            CA_APP_PUB_BLOCK_ADS_10 = "ca-app-pub-3940256099942544/5224354917"
+            CA_APP_PUB_BLOCK_ADS_20 = "ca-app-pub-3940256099942544/5224354917"
+            CA_APP_PUB_BLOCK_ADS_30 = "ca-app-pub-3940256099942544/5224354917"
         } else {
             CA_APP_PUB_SCAN = "ca-app-pub-9782307752944150/1354115518"
             CA_APP_PUB_CREATE = "ca-app-pub-9782307752944150/4265868240"
@@ -79,13 +93,29 @@ android {
             CA_APP_PUB_SETTINGS = "ca-app-pub-9782307752944150/2154161483"
             CA_APP_PUB_CREATE_NATIVE_ADS = "ca-app-pub-9782307752944150/7458259367"
             CA_APP_PUB_APP_INTERSTITIAL = "ca-app-pub-9782307752944150/1836272725"
+            CA_APP_PUB_BLOCK_ADS_10 = "ca-app-pub-9782307752944150/3529460862"
+            CA_APP_PUB_BLOCK_ADS_20 = "ca-app-pub-9782307752944150/6956472508"
+            CA_APP_PUB_BLOCK_ADS_30 = "ca-app-pub-9782307752944150/4036727329"
         }
+        AD_UNIT_SCAN_BANNER = "1b44e2487a2faa5d"
+        AD_UNIT_HISTORY_BANNER = "a9dbad91a689057d"
+        AD_UNIT_CREATE_BANNER = "607d203c9fa037bc"
+        AD_UNIT_SETTING_BANNER = "60b147b8b6e6f316"
+        AD_UNIT_APP_INTERSTITIAL = "a59ae825bedc94f6"
         variant.buildConfigField "String", "CA_APP_PUB_SCAN", "\"${CA_APP_PUB_SCAN}\""
         variant.buildConfigField "String", "CA_APP_PUB_CREATE", "\"${CA_APP_PUB_CREATE}\""
         variant.buildConfigField "String", "CA_APP_PUB_HISTORY", "\"${CA_APP_PUB_HISTORY}\""
         variant.buildConfigField "String", "CA_APP_PUB_SETTINGS", "\"${CA_APP_PUB_SETTINGS}\""
         variant.buildConfigField "String", "CA_APP_PUB_CREATE_NATIVE_ADS", "\"${CA_APP_PUB_CREATE_NATIVE_ADS}\""
         variant.buildConfigField "String", "CA_APP_PUB_APP_INTERSTITIAL", "\"${CA_APP_PUB_APP_INTERSTITIAL}\""
+        variant.buildConfigField "String", "CA_APP_PUB_BLOCK_ADS_10", "\"${CA_APP_PUB_BLOCK_ADS_10}\""
+        variant.buildConfigField "String", "CA_APP_PUB_BLOCK_ADS_20", "\"${CA_APP_PUB_BLOCK_ADS_20}\""
+        variant.buildConfigField "String", "CA_APP_PUB_BLOCK_ADS_30", "\"${CA_APP_PUB_BLOCK_ADS_30}\""
+        variant.buildConfigField "String", "AD_UNIT_SCAN_BANNER", "\"${AD_UNIT_SCAN_BANNER}\""
+        variant.buildConfigField "String", "AD_UNIT_CREATE_BANNER", "\"${AD_UNIT_CREATE_BANNER}\""
+        variant.buildConfigField "String", "AD_UNIT_HISTORY_BANNER", "\"${AD_UNIT_HISTORY_BANNER}\""
+        variant.buildConfigField "String", "AD_UNIT_SETTING_BANNER", "\"${AD_UNIT_SETTING_BANNER}\""
+        variant.buildConfigField "String", "AD_UNIT_APP_INTERSTITIAL", "\"${AD_UNIT_APP_INTERSTITIAL}\""
     }
 }
 
@@ -142,6 +172,8 @@ dependencies {
 
     // Ads
     implementation 'com.google.android.gms:play-services-ads:20.6.0'
+    implementation "com.applovin:applovin-sdk:+"
+    implementation "com.google.android.gms:play-services-ads-identifier"
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:30.0.0')

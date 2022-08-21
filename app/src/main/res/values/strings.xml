@@ -200,6 +200,8 @@
 
     <!--Settings fragment-->
     <string name="fragment_settings_title">Settings</string>
+    <string name="fragment_settings_ads_settings">Ads</string>
+    <string name="fragment_settings_block_ads">Block ads</string>
     <string name="fragment_settings_appearance_settings">Appearance</string>
     <string name="fragment_settings_theme">Theme</string>
     <string name="fragment_settings_inverse_barcode_colors_in_dark_theme">Inverse code colors in dark theme</string>
@@ -238,6 +240,11 @@
     <string name="fragment_settings_permissions">Permissions</string>
     <string name="fragment_settings_source_code">Source code</string>
     <string name="fragment_settings_app_version">App version</string>
+
+    <!--Block ads activity-->
+    <string name="block_ads_10_mins">Block ads 10 min in this session</string>
+    <string name="block_ads_20_mins">Block ads 20 min in this session</string>
+    <string name="block_ads_30_mins">Block ads 30 min in this session</string>
 
     <!--Choose theme activity-->
     <string name="activity_choose_theme_title">Theme</string>

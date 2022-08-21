@@ -6,7 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.applovin.mediation.MaxAd
+import com.applovin.mediation.MaxAdFormat
+import com.applovin.mediation.MaxAdViewAdListener
+import com.applovin.mediation.MaxError
+import com.applovin.mediation.ads.MaxAdView
+import com.applovin.sdk.AppLovinSdkUtils
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -19,10 +27,11 @@ import tech.sonle.barcodescanner.BuildConfig
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.di.barcodeDatabase
 import tech.sonle.barcodescanner.di.settings
+import tech.sonle.barcodescanner.extension.Config
 import tech.sonle.barcodescanner.extension.applySystemWindowInsets
-import tech.sonle.barcodescanner.extension.packageManager
 import tech.sonle.barcodescanner.extension.showError
 import tech.sonle.barcodescanner.feature.common.dialog.DeleteConfirmationDialogFragment
+import tech.sonle.barcodescanner.feature.tabs.settings.ads.AdsActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.camera.ChooseCameraActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.formats.SupportedFormatsActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.permissions.AllPermissionsActivity
@@ -31,6 +40,8 @@ import tech.sonle.barcodescanner.feature.tabs.settings.theme.ChooseThemeActivity
 
 class SettingsFragment : Fragment(), DeleteConfirmationDialogFragment.Listener {
     private val disposable = CompositeDisposable()
+
+    private var adView: MaxAdView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,7 +62,11 @@ class SettingsFragment : Fragment(), DeleteConfirmationDialogFragment.Listener {
         handleButtonClicks()
         showSettings()
         showAppVersion()
-        initAds()
+        if (!Config.APPLOVIN_SHOW) {
+            initAds()
+        } else {
+            createBannerAd()
+        }
     }
 
     private fun initAds() {
@@ -62,6 +77,56 @@ class SettingsFragment : Fragment(), DeleteConfirmationDialogFragment.Listener {
 
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
+    }
+
+    private fun createBannerAd() {
+        adView = MaxAdView(BuildConfig.AD_UNIT_CREATE_BANNER, requireContext())
+        adView?.setListener(object : MaxAdViewAdListener {
+            override fun onAdLoaded(ad: MaxAd?) {
+                println("onAdLoaded")
+            }
+
+            override fun onAdDisplayed(ad: MaxAd?) {
+                println("onAdDisplayed")
+            }
+
+            override fun onAdHidden(ad: MaxAd?) {
+                println("onAdHidden")
+            }
+
+            override fun onAdClicked(ad: MaxAd?) {
+                println("onAdClicked")
+            }
+
+            override fun onAdLoadFailed(adUnitId: String?, error: MaxError?) {
+                println("onAdLoadFailed: ${error?.message}")
+            }
+
+            override fun onAdDisplayFailed(ad: MaxAd?, error: MaxError?) {
+                println("onAdDisplayFailed: ${error?.message}")
+            }
+
+            override fun onAdExpanded(ad: MaxAd?) {
+                println("onAdExpanded")
+            }
+
+            override fun onAdCollapsed(ad: MaxAd?) {
+                println("onAdCollapsed")
+            }
+        })
+
+        val width = ViewGroup.LayoutParams.MATCH_PARENT
+        val heightDp = MaxAdFormat.BANNER.getAdaptiveSize(requireActivity()).height
+        val heightPx = AppLovinSdkUtils.dpToPx(requireContext(), heightDp)
+
+        adView?.layoutParams = FrameLayout.LayoutParams(width, heightPx)
+
+        adView?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+        adView?.setExtraParameter("adaptive_banner", "true")
+        adContainer.addView(adView)
+
+        adView?.startAutoRefresh()
+        adView?.loadAd()
     }
 
     override fun onDeleteConfirmed() {
@@ -104,6 +169,7 @@ class SettingsFragment : Fragment(), DeleteConfirmationDialogFragment.Listener {
     }
 
     private fun handleButtonClicks() {
+        button_block_ads.setOnClickListener { AdsActivity.start(requireActivity()) }
         button_choose_theme.setOnClickListener { ChooseThemeActivity.start(requireActivity()) }
         button_choose_camera.setOnClickListener { ChooseCameraActivity.start(requireActivity()) }
         button_select_supported_formats.setOnClickListener {

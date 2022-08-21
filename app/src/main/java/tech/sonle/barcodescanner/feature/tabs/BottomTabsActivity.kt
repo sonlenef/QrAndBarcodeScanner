@@ -1,8 +1,10 @@
 package tech.sonle.barcodescanner.feature.tabs
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
+import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import tech.sonle.barcodescanner.BuildConfig
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.extension.applySystemWindowInsets
@@ -39,6 +41,7 @@ class BottomTabsActivity : BaseActivity(), BottomNavigationView.OnNavigationItem
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     Config.IS_SHOW_ADS = remoteConfig.getBoolean("AdsShow")
+                    Config.APPLOVIN_SHOW = remoteConfig.getBoolean("ApplovinShow")
                 }
             }
 

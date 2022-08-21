@@ -30,6 +30,9 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-9782307752944150~1550939527"/>
 
+        <meta-data android:name="applovin.sdk.key"
+            android:value="o0to5BRAHdnRtMG-SfSd-uOp21wv6uG4bUwIquP1iQ4GTlux74Zk1X8VDavPmLhhBDbvvngIlLUDxGNSDU0IOX"/>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="tech.sonle.barcodescanner.fileprovider"
@@ -199,6 +202,7 @@
             android:configChanges="orientation|screenSize"
             android:exported="false"
             />
+        <activity android:name=".feature.tabs.settings.ads.AdsActivity" />
 
     </application>
 

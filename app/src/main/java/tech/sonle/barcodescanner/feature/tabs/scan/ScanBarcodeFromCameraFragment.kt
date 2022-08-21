@@ -8,10 +8,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.applovin.mediation.MaxAd
+import com.applovin.mediation.MaxAdFormat
+import com.applovin.mediation.MaxAdViewAdListener
+import com.applovin.mediation.MaxError
+import com.applovin.mediation.ads.MaxAdView
+import com.applovin.sdk.AppLovinSdkUtils
 import com.budiyev.android.codescanner.*
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -37,6 +45,8 @@ import tech.sonle.barcodescanner.usecase.save
 import java.util.concurrent.TimeUnit
 
 class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.Listener {
+
+    private var adView: MaxAdView? = null
 
     companion object {
         private val PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
@@ -72,7 +82,11 @@ class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.L
         handleDecreaseZoomClicked()
         handleIncreaseZoomClicked()
         requestPermissions()
-        initAds()
+        if (!Config.APPLOVIN_SHOW) {
+            initAds()
+        } else {
+            createBannerAd()
+        }
     }
 
     private fun initAds() {
@@ -407,5 +421,55 @@ class ScanBarcodeFromCameraFragment : Fragment(), ConfirmBarcodeDialogFragment.L
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+    }
+
+    private fun createBannerAd() {
+        adView = MaxAdView(BuildConfig.AD_UNIT_SCAN_BANNER, requireContext())
+        adView?.setListener(object : MaxAdViewAdListener {
+            override fun onAdLoaded(ad: MaxAd?) {
+                println("onAdLoaded")
+            }
+
+            override fun onAdDisplayed(ad: MaxAd?) {
+                println("onAdDisplayed")
+            }
+
+            override fun onAdHidden(ad: MaxAd?) {
+                println("onAdHidden")
+            }
+
+            override fun onAdClicked(ad: MaxAd?) {
+                println("onAdClicked")
+            }
+
+            override fun onAdLoadFailed(adUnitId: String?, error: MaxError?) {
+                println("onAdLoadFailed: ${error?.message}")
+            }
+
+            override fun onAdDisplayFailed(ad: MaxAd?, error: MaxError?) {
+                println("onAdDisplayFailed: ${error?.message}")
+            }
+
+            override fun onAdExpanded(ad: MaxAd?) {
+                println("onAdExpanded")
+            }
+
+            override fun onAdCollapsed(ad: MaxAd?) {
+                println("onAdCollapsed")
+            }
+        })
+
+        val width = ViewGroup.LayoutParams.MATCH_PARENT
+        val heightDp = MaxAdFormat.BANNER.getAdaptiveSize(requireActivity()).height
+        val heightPx = AppLovinSdkUtils.dpToPx(requireContext(), heightDp)
+
+        adView?.layoutParams = FrameLayout.LayoutParams(width, heightPx)
+
+        adView?.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+        adView?.setExtraParameter("adaptive_banner", "true")
+        adContainer.addView(adView)
+
+        adView?.startAutoRefresh()
+        adView?.loadAd()
     }
 }

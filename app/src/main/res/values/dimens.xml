@@ -33,5 +33,6 @@
     <dimen name="button_corner_radius">4dp</dimen>
 
     <dimen name="icon_edit_barcode_name_size">20dp</dimen>
+    <dimen name="banner_height">50dp</dimen>
 
 </resources>

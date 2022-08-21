@@ -7,8 +7,16 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.applovin.mediation.MaxAd
+import com.applovin.mediation.MaxAdFormat
+import com.applovin.mediation.MaxAdViewAdListener
+import com.applovin.mediation.MaxError
+import com.applovin.mediation.ads.MaxAdView
+import com.applovin.sdk.AppLovinSdkUtils
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
@@ -21,10 +29,7 @@ import kotlinx.android.synthetic.main.activity_create_barcode.*
 import tech.sonle.barcodescanner.BuildConfig
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.di.*
-import tech.sonle.barcodescanner.extension.applySystemWindowInsets
-import tech.sonle.barcodescanner.extension.showError
-import tech.sonle.barcodescanner.extension.toStringId
-import tech.sonle.barcodescanner.extension.unsafeLazy
+import tech.sonle.barcodescanner.extension.*
 import tech.sonle.barcodescanner.feature.BaseActivity
 import tech.sonle.barcodescanner.feature.barcode.BarcodeActivity
 import tech.sonle.barcodescanner.feature.tabs.create.barcode.*
@@ -36,6 +41,8 @@ import tech.sonle.barcodescanner.model.schema.Schema
 import tech.sonle.barcodescanner.usecase.save
 
 class CreateBarcodeActivity : BaseActivity(), AppAdapter.Listener {
+
+    private var adView: MaxAdView? = null
 
     companion object {
         private const val BARCODE_FORMAT_KEY = "BARCODE_FORMAT_KEY"
@@ -107,7 +114,11 @@ class CreateBarcodeActivity : BaseActivity(), AppAdapter.Listener {
         showToolbarTitle()
         showToolbarMenu()
         showFragment()
-        initAds()
+        if (!Config.APPLOVIN_SHOW) {
+            initAds()
+        } else {
+            createBannerAd()
+        }
     }
 
     private fun initAds() {
@@ -118,6 +129,56 @@ class CreateBarcodeActivity : BaseActivity(), AppAdapter.Listener {
 
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
+    }
+
+    private fun createBannerAd() {
+        adView = MaxAdView(BuildConfig.AD_UNIT_CREATE_BANNER, this)
+        adView?.setListener(object : MaxAdViewAdListener {
+            override fun onAdLoaded(ad: MaxAd?) {
+                println("onAdLoaded")
+            }
+
+            override fun onAdDisplayed(ad: MaxAd?) {
+                println("onAdDisplayed")
+            }
+
+            override fun onAdHidden(ad: MaxAd?) {
+                println("onAdHidden")
+            }
+
+            override fun onAdClicked(ad: MaxAd?) {
+                println("onAdClicked")
+            }
+
+            override fun onAdLoadFailed(adUnitId: String?, error: MaxError?) {
+                println("onAdLoadFailed: ${error?.message}")
+            }
+
+            override fun onAdDisplayFailed(ad: MaxAd?, error: MaxError?) {
+                println("onAdDisplayFailed: ${error?.message}")
+            }
+
+            override fun onAdExpanded(ad: MaxAd?) {
+                println("onAdExpanded")
+            }
+
+            override fun onAdCollapsed(ad: MaxAd?) {
+                println("onAdCollapsed")
+            }
+        })
+
+        val width = ViewGroup.LayoutParams.MATCH_PARENT
+        val heightDp = MaxAdFormat.BANNER.getAdaptiveSize(this).height
+        val heightPx = AppLovinSdkUtils.dpToPx(this, heightDp)
+
+        adView?.layoutParams = FrameLayout.LayoutParams(width, heightPx)
+
+        adView?.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
+        adView?.setExtraParameter("adaptive_banner", "true")
+        adContainer.addView(adView)
+
+        adView?.startAutoRefresh()
+        adView?.loadAd()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

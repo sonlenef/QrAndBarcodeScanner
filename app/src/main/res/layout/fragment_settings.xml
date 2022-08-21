@@ -29,6 +29,24 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/text_view_ads_title"
+                style="@style/SettingsGroupTitleTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_margin"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginBottom="@dimen/default_margin_small"
+                android:text="@string/fragment_settings_ads_settings" />
+
+
+            <tech.sonle.barcodescanner.feature.common.view.SettingsButton
+                android:id="@+id/button_block_ads"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:isSwitchVisible="false"
+                app:text="@string/fragment_settings_block_ads" />
+
             <!--Appearance-->
             <TextView
                 android:id="@+id/text_view_appearance_title"

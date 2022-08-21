@@ -6,5 +6,6 @@ package tech.sonle.barcodescanner.extension
 class Config {
     companion object {
         var IS_SHOW_ADS = true
+        var APPLOVIN_SHOW = false
     }
 }
