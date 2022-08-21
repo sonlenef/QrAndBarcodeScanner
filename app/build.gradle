@@ -75,7 +75,7 @@ android {
                 CA_APP_PUB_BLOCK_ADS_10, CA_APP_PUB_BLOCK_ADS_20, CA_APP_PUB_BLOCK_ADS_30
         def AD_UNIT_SCAN_BANNER, AD_UNIT_HISTORY_BANNER,
                 AD_UNIT_CREATE_BANNER, AD_UNIT_SETTING_BANNER,
-                AD_UNIT_APP_INTERSTITIAL
+                AD_UNIT_APP_INTERSTITIAL, AD_UNIT_APP_REWARD
         if (variant.getName().contains("develop")) {
             CA_APP_PUB_SCAN = "ca-app-pub-3940256099942544/6300978111"
             CA_APP_PUB_CREATE = "ca-app-pub-3940256099942544/6300978111"
@@ -102,6 +102,7 @@ android {
         AD_UNIT_CREATE_BANNER = "607d203c9fa037bc"
         AD_UNIT_SETTING_BANNER = "60b147b8b6e6f316"
         AD_UNIT_APP_INTERSTITIAL = "a59ae825bedc94f6"
+        AD_UNIT_APP_REWARD = "60885a6188c46657"
         variant.buildConfigField "String", "CA_APP_PUB_SCAN", "\"${CA_APP_PUB_SCAN}\""
         variant.buildConfigField "String", "CA_APP_PUB_CREATE", "\"${CA_APP_PUB_CREATE}\""
         variant.buildConfigField "String", "CA_APP_PUB_HISTORY", "\"${CA_APP_PUB_HISTORY}\""
@@ -116,6 +117,7 @@ android {
         variant.buildConfigField "String", "AD_UNIT_HISTORY_BANNER", "\"${AD_UNIT_HISTORY_BANNER}\""
         variant.buildConfigField "String", "AD_UNIT_SETTING_BANNER", "\"${AD_UNIT_SETTING_BANNER}\""
         variant.buildConfigField "String", "AD_UNIT_APP_INTERSTITIAL", "\"${AD_UNIT_APP_INTERSTITIAL}\""
+        variant.buildConfigField "String", "AD_UNIT_APP_REWARD", "\"${AD_UNIT_APP_REWARD}\""
     }
 }
 
