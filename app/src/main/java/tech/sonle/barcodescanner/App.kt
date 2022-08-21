@@ -1,9 +1,15 @@
 package tech.sonle.barcodescanner
 
 import android.app.Activity
+import android.os.Handler
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.MutableLiveData
 import androidx.multidex.MultiDexApplication
+import com.applovin.mediation.MaxAd
+import com.applovin.mediation.MaxAdListener
+import com.applovin.mediation.MaxError
+import com.applovin.mediation.ads.MaxInterstitialAd
 import com.applovin.sdk.AppLovinSdk
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
@@ -11,9 +17,11 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import tech.sonle.barcodescanner.di.settings
+import tech.sonle.barcodescanner.extension.Config
 import tech.sonle.barcodescanner.extension.Config.Companion.IS_SHOW_ADS
 import tech.sonle.barcodescanner.feature.tabs.settings.ads.AdsActivity
-import java.util.*
+import java.util.concurrent.TimeUnit
+import kotlin.math.pow
 
 
 class App : MultiDexApplication() {
@@ -21,11 +29,14 @@ class App : MultiDexApplication() {
     var TAG = "my_" + javaClass.simpleName
 
     var interstitial: InterstitialAd? = null
+    private lateinit var interstitialAd: MaxInterstitialAd
+    private var retryAttempt = 0.0
     var rewardedAd: RewardedAd? = null
     var flag = false
     var currentTime: Long = 0
     var lastTimeShowInter: Long = 0
     var lastTimeShowReward: Long = 0
+    var showAdsIn: MutableLiveData<Long> = MutableLiveData(0)
 
     override fun onCreate() {
         applyTheme()
@@ -36,7 +47,6 @@ class App : MultiDexApplication() {
         // Make sure to set the mediation provider value to "max" to ensure proper functionality
         AppLovinSdk.getInstance(this).apply {
             mediationProvider = "max"
-            settings.testDeviceAdvertisingIds = listOf("41ddbc58-9876-4e66-a3b9-0c67f98f6ba1")
             initializeSdk {}
         }
         super.onCreate()
@@ -97,15 +107,27 @@ class App : MultiDexApplication() {
     }
 
     fun showInter(activity: Activity) {
-        currentTime = System.currentTimeMillis()
-        if (currentTime - lastTimeShowInter >= 3000 && IS_SHOW_ADS) {
-            Log.d(TAG, "showInter: $currentTime - $lastTimeShowInter")
-            if (interstitial != null) {
-                interstitial!!.show(activity)
-                flag = false
+        if ((showAdsIn.value?.minus(System.currentTimeMillis()) ?: 0) <= 0) {
+            if (!Config.APPLOVIN_SHOW) {
+                currentTime = System.currentTimeMillis()
+                if (currentTime - lastTimeShowInter >= 3000 && IS_SHOW_ADS) {
+                    Log.d(TAG, "showInter: $currentTime - $lastTimeShowInter")
+                    if (interstitial != null) {
+                        interstitial!!.show(activity)
+                        flag = false
+                    } else {
+                        Log.d(TAG, "showInter: inter don't show")
+                        loadInter()
+                    }
+                }
             } else {
-                Log.d(TAG, "showInter: inter don't show")
-                loadInter()
+                if (IS_SHOW_ADS) {
+                    if (this::interstitialAd.isInitialized && interstitialAd.isReady) {
+                        interstitialAd.showAd()
+                    } else {
+                        createInterstitialAd(activity)
+                    }
+                }
             }
         }
     }
@@ -166,6 +188,7 @@ class App : MultiDexApplication() {
                     }
                 }
                 rewardedAd!!.show(activity) {
+                    if (showAdsIn.value == 0L) showAdsIn.value = System.currentTimeMillis()
                     claim.invoke()
                 }
             } else {
@@ -175,5 +198,36 @@ class App : MultiDexApplication() {
         } else {
             Toast.makeText(activity, "Action too fast", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun createInterstitialAd(activity: Activity) {
+        interstitialAd = MaxInterstitialAd(BuildConfig.AD_UNIT_APP_INTERSTITIAL, activity)
+        interstitialAd.setListener(object : MaxAdListener {
+            override fun onAdLoaded(ad: MaxAd?) {
+                retryAttempt = 0.0
+            }
+
+            override fun onAdDisplayed(ad: MaxAd?) {}
+
+            override fun onAdHidden(ad: MaxAd?) {
+                interstitialAd.loadAd()
+            }
+
+            override fun onAdClicked(ad: MaxAd?) {}
+
+            override fun onAdLoadFailed(adUnitId: String?, error: MaxError?) {
+                retryAttempt++
+                val delayMillis =
+                    TimeUnit.SECONDS.toMillis(2.0.pow(6.0.coerceAtMost(retryAttempt)).toLong())
+
+                Handler().postDelayed({ interstitialAd.loadAd() }, delayMillis)
+            }
+
+            override fun onAdDisplayFailed(ad: MaxAd?, error: MaxError?) {
+                interstitialAd.loadAd()
+            }
+        })
+
+        interstitialAd.loadAd()
     }
 }

@@ -245,6 +245,7 @@
     <string name="block_ads_10_mins">Block ads 10 min in this session</string>
     <string name="block_ads_20_mins">Block ads 20 min in this session</string>
     <string name="block_ads_30_mins">Block ads 30 min in this session</string>
+    <string name="block_ads">Ads wont show for the next %s minutes</string>
 
     <!--Choose theme activity-->
     <string name="activity_choose_theme_title">Theme</string>

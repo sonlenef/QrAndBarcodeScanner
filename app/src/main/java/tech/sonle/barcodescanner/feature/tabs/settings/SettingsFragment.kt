@@ -23,6 +23,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_settings.*
+import tech.sonle.barcodescanner.App
 import tech.sonle.barcodescanner.BuildConfig
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.di.barcodeDatabase
@@ -62,10 +63,14 @@ class SettingsFragment : Fragment(), DeleteConfirmationDialogFragment.Listener {
         handleButtonClicks()
         showSettings()
         showAppVersion()
-        if (!Config.APPLOVIN_SHOW) {
-            initAds()
-        } else {
-            createBannerAd()
+        if (((requireActivity().application as App).showAdsIn.value?.minus(System.currentTimeMillis()) ?: 0) <= 0) {
+            if (Config.IS_SHOW_ADS) {
+                if (!Config.APPLOVIN_SHOW) {
+                    initAds()
+                } else {
+                    createBannerAd()
+                }
+            }
         }
     }
 

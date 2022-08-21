@@ -114,10 +114,14 @@ class CreateBarcodeActivity : BaseActivity(), AppAdapter.Listener {
         showToolbarTitle()
         showToolbarMenu()
         showFragment()
-        if (!Config.APPLOVIN_SHOW) {
-            initAds()
-        } else {
-            createBannerAd()
+        if (((application as tech.sonle.barcodescanner.App).showAdsIn.value?.minus(System.currentTimeMillis()) ?: 0) <= 0) {
+            if (Config.IS_SHOW_ADS) {
+                if (!Config.APPLOVIN_SHOW) {
+                    initAds()
+                } else {
+                    createBannerAd()
+                }
+            }
         }
     }
 

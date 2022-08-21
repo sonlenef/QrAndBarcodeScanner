@@ -18,6 +18,7 @@ import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.zxing.BarcodeFormat
 import kotlinx.android.synthetic.main.fragment_create_barcode.*
+import tech.sonle.barcodescanner.App
 import tech.sonle.barcodescanner.BuildConfig
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.extension.Config
@@ -44,10 +45,14 @@ class CreateBarcodeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         supportEdgeToEdge()
         handleButtonsClicked()
-        if (!Config.APPLOVIN_SHOW) {
-            initAds()
-        } else {
-            createBannerAd()
+        if (((requireActivity().application as App).showAdsIn.value?.minus(System.currentTimeMillis()) ?: 0) <= 0) {
+            if (Config.IS_SHOW_ADS) {
+                if (!Config.APPLOVIN_SHOW) {
+                    initAds()
+                } else {
+                    createBannerAd()
+                }
+            }
         }
     }
 

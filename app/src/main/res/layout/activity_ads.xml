@@ -1,38 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:id="@+id/root_view"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-        style="@style/AppBarLayoutStyle"
-        >
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            app:title="@string/fragment_settings_block_ads"
             style="@style/ToolbarWithBackButtonStyle"
-            />
+            app:title="@string/fragment_settings_block_ads" />
     </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:id="@+id/adContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
+
+    <TextView
+        android:id="@+id/adsBlock"
+        style="@style/DefaultTextViewStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/adContainer" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scroll_view"
-        style="@style/ScrollStyle"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/adsBlock">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
+
             <tech.sonle.barcodescanner.feature.common.view.SettingsButton
                 android:id="@+id/button_block_ads_10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:isSwitchVisible="false"
-                app:text="@string/block_ads_10_mins"
-                />
+                app:text="@string/block_ads_10_mins" />
 
             <View
                 android:id="@+id/delimiter_appearance_one"
@@ -43,8 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:isSwitchVisible="false"
-                app:text="@string/block_ads_20_mins"
-                />
+                app:text="@string/block_ads_20_mins" />
 
             <View
                 android:id="@+id/delimiter_appearance"
@@ -55,9 +73,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:isSwitchVisible="false"
-                app:text="@string/block_ads_30_mins"
-                />
+                app:text="@string/block_ads_30_mins" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
