@@ -36,6 +36,7 @@ import tech.sonle.barcodescanner.feature.tabs.settings.ads.AdsActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.camera.ChooseCameraActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.formats.SupportedFormatsActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.permissions.AllPermissionsActivity
+import tech.sonle.barcodescanner.feature.tabs.settings.permissions.WebViewActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.search.ChooseSearchEngineActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.theme.ChooseThemeActivity
 
@@ -63,7 +64,9 @@ class SettingsFragment : Fragment(), DeleteConfirmationDialogFragment.Listener {
         handleButtonClicks()
         showSettings()
         showAppVersion()
-        if (((requireActivity().application as App).showAdsIn.value?.minus(System.currentTimeMillis()) ?: 0) <= 0) {
+        if (((requireActivity().application as App).showAdsIn.value?.minus(System.currentTimeMillis())
+                ?: 0) <= 0
+        ) {
             if (Config.IS_SHOW_ADS) {
                 if (!Config.APPLOVIN_SHOW) {
                     initAds()
@@ -170,6 +173,10 @@ class SettingsFragment : Fragment(), DeleteConfirmationDialogFragment.Listener {
         }
         button_do_not_save_duplicates.setCheckedChangedListener {
             settings.doNotSaveDuplicates = it
+        }
+
+        privacyPolicy.setOnClickListener {
+            startActivity(WebViewActivity.newInstance(requireActivity()))
         }
     }
 

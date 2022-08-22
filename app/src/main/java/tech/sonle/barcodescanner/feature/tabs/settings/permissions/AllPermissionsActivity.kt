@@ -3,10 +3,10 @@ package tech.sonle.barcodescanner.feature.tabs.settings.permissions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import kotlinx.android.synthetic.main.activity_all_permissions.*
 import tech.sonle.barcodescanner.R
 import tech.sonle.barcodescanner.extension.applySystemWindowInsets
 import tech.sonle.barcodescanner.feature.BaseActivity
-import kotlinx.android.synthetic.main.activity_all_permissions.*
 
 class AllPermissionsActivity : BaseActivity() {
 
@@ -22,8 +22,5 @@ class AllPermissionsActivity : BaseActivity() {
         setContentView(R.layout.activity_all_permissions)
         root_view.applySystemWindowInsets(applyTop = true, applyBottom = true)
         toolbar.setNavigationOnClickListener { finish() }
-        privacyPolicy.setOnClickListener {
-            startActivity(WebViewActivity.newInstance(this))
-        }
     }
 }

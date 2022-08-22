@@ -30,6 +30,23 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/privacyPolicyTitle"
+                style="@style/SettingsGroupTitleTextViewStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/default_margin"
+                android:layout_marginTop="@dimen/default_margin"
+                android:layout_marginBottom="@dimen/default_margin_small"
+                android:text="@string/privacy_policy" />
+
+            <tech.sonle.barcodescanner.feature.common.view.SettingsButton
+                android:id="@+id/privacyPolicy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:isSwitchVisible="false"
+                app:text="@string/privacy_policy_" />
+
+            <TextView
                 android:id="@+id/text_view_ads_title"
                 style="@style/SettingsGroupTitleTextViewStyle"
                 android:layout_width="match_parent"
