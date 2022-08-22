@@ -22,5 +22,8 @@ class AllPermissionsActivity : BaseActivity() {
         setContentView(R.layout.activity_all_permissions)
         root_view.applySystemWindowInsets(applyTop = true, applyBottom = true)
         toolbar.setNavigationOnClickListener { finish() }
+        privacyPolicy.setOnClickListener {
+            startActivity(WebViewActivity.newInstance(this))
+        }
     }
 }

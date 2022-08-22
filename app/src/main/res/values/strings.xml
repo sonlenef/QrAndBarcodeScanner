@@ -389,5 +389,6 @@
     <string name="barcode_format_pdf_417" translatable="false">PDF417</string>
     <string name="barcode_format_upc_a" translatable="false">UPC-A</string>
     <string name="barcode_format_upc_e" translatable="false">UPC-E</string>
+    <string name="privacy_policy">Privacy Policy</string>
 
 </resources>

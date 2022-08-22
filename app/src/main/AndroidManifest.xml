@@ -204,6 +204,7 @@
             android:exported="false"
             />
         <activity android:name=".feature.tabs.settings.ads.AdsActivity" />
+        <activity android:name=".feature.tabs.settings.permissions.WebViewActivity" />
 
     </application>
 
