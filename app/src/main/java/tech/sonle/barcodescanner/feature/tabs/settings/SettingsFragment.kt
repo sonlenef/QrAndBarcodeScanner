@@ -32,7 +32,6 @@ import tech.sonle.barcodescanner.extension.Config
 import tech.sonle.barcodescanner.extension.applySystemWindowInsets
 import tech.sonle.barcodescanner.extension.showError
 import tech.sonle.barcodescanner.feature.common.dialog.DeleteConfirmationDialogFragment
-import tech.sonle.barcodescanner.feature.tabs.settings.ads.AdsActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.camera.ChooseCameraActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.formats.SupportedFormatsActivity
 import tech.sonle.barcodescanner.feature.tabs.settings.permissions.AllPermissionsActivity
@@ -181,7 +180,6 @@ class SettingsFragment : Fragment(), DeleteConfirmationDialogFragment.Listener {
     }
 
     private fun handleButtonClicks() {
-        button_block_ads.setOnClickListener { AdsActivity.start(requireActivity()) }
         button_choose_theme.setOnClickListener { ChooseThemeActivity.start(requireActivity()) }
         button_choose_camera.setOnClickListener { ChooseCameraActivity.start(requireActivity()) }
         button_select_supported_formats.setOnClickListener {

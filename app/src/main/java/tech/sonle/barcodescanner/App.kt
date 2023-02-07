@@ -18,7 +18,6 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import tech.sonle.barcodescanner.di.settings
 import tech.sonle.barcodescanner.extension.Config
 import tech.sonle.barcodescanner.extension.Config.Companion.IS_SHOW_ADS
-import tech.sonle.barcodescanner.feature.tabs.settings.ads.AdsActivity
 import java.util.concurrent.TimeUnit
 import kotlin.math.pow
 
@@ -173,7 +172,6 @@ class App : MultiDexApplication() {
 
                         override fun onAdFailedToShowFullScreenContent(adError: AdError) {
                             // Called when ad fails to show.
-                            Log.e(AdsActivity.TAG, "Ad failed to show fullscreen content.")
                             rewardedAd = null
                             lastTimeShowReward = System.currentTimeMillis()
                             loadReward(adUnitId)
